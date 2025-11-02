@@ -1,0 +1,110 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# PyTorch
+*.pth
+*.pt
+*.ckpt
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Training outputs
+outputs/*/
+!outputs/.gitkeep
+checkpoints/
+logs/
+runs/
+wandb/
+
+# Model cache (HuggingFace models are large)
+.cache/
+*.safetensors
+*.bin
+pytorch_model.bin
+model.safetensors
+
+# Data files (don't commit large datasets)
+*.fa
+*.fq
+*.fastq
+*.fasta
+*.fa.gz
+*.fq.gz
+*.fastq.gz
+*.fasta.gz
+!examples/*.fa
+!examples/*.fq
+
+# Large files
+*.tar
+*.tar.gz
+*.zip
+*.rar
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*~
+
+# Training logs
+training.log
+*.log
+optimized_training.log
+download_log.txt
+
+# Test outputs
+test_predictions.csv
+training_output.log
+
+# Generated plots
+*.png
+!docs/*.png
+!assets/*.png
+
+# CSV outputs (keep examples)
+*.csv
+!examples/*.csv
+!*_class_distribution.csv
+
+# Compiled tokenizers
+*.model
+!examples/*.model
+
+# System files
+.nfs*
+lost+found/
+

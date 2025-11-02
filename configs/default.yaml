@@ -1,0 +1,143 @@
+# METAGENE Classification Pipeline Configuration
+# This is the default configuration file with all available parameters
+
+# Random seed for reproducibility
+seed: 42
+
+# Device configuration
+device: cuda
+
+# Tokenizer configuration
+tokenizer:
+  # Path to METAGENE BPE tokenizer OR HuggingFace model name
+  # Option 1: Use local minbpe tokenizer
+  # name_or_path: /media/user/disk2/METAGENE/metagene-pretrain/train/minbpe/tokenizer/large-mgfm-1024.model
+  # Option 2: Use HuggingFace official tokenizer (recommended)
+  name_or_path: metagene-ai/METAGENE-1
+  # Whether to use HuggingFace AutoTokenizer (recommended if available)
+  use_hf_tokenizer: true
+  # Maximum sequence length
+  max_length: 512
+  # Whether to pack short reads together
+  pack_short_reads: false
+  # Padding strategy
+  padding: max_length
+  # Truncation strategy
+  truncation: true
+
+# Model configuration
+model:
+  # HuggingFace model path for METAGENE-1 encoder
+  encoder_path: metagene-ai/METAGENE-1
+  # Pooling method (mean, max, cls)
+  pooling: mean
+  # Number of classes (auto = inferred from data)
+  num_classes: auto
+  # Dropout rate for classifier
+  dropout: 0.1
+  # LoRA configuration
+  lora:
+    enabled: true
+    # LoRA rank
+    r: 8
+    # LoRA alpha
+    alpha: 16
+    # LoRA dropout
+    dropout: 0.1
+    # Target modules for LoRA
+    target_modules: [q_proj, k_proj, v_proj, o_proj]
+    # Bias configuration
+    bias: none
+    # Task type
+    task_type: SEQ_CLS
+
+# Dataset configuration
+dataset:
+  # Training data paths (set via CLI)
+  train_fasta: null
+  val_fasta: null
+  test_fasta: null
+  # Mapping TSV file path
+  mapping_tsv: null
+  # Header regex pattern for parsing FASTA headers
+  header_regex: "^lbl\\|(?P<class_id>\\d+)\\|(?P<tax_id>\\d+)?\\|(?P<readlen>\\d+)?\\|(?P<name>[^/\\s]+)(?:/(?P<mate>\\d+))?$"
+  # File format (auto = auto-detect)
+  file_format: auto
+  # Gzip detection (auto = auto-detect)
+  gzip: auto
+  # Whether to fail on unknown classes
+  strict_classes: true
+  # Column names in mapping TSV
+  label_column: label_name
+  class_column: class_id
+  tax_column: tax_id
+
+# Training configuration
+training:
+  # Output directory for checkpoints and logs
+  output_dir: outputs/exp1
+  # Batch size
+  batch_size: 128
+  # Gradient accumulation steps
+  grad_accum_steps: 1
+  # Maximum number of epochs
+  max_epochs: 10
+  # Mixed precision training
+  precision: bf16-mixed  # bf16-mixed | fp16-mixed | 32
+  # Early stopping configuration
+  early_stopping:
+    patience: 3
+    metric: macro_f1
+    mode: max
+  # Checkpoint configuration
+  checkpoint:
+    save_best: true
+    save_last: true
+  # PyTorch compilation for speedup
+  torch_compile: false
+
+# Optimizer configuration
+optimizer:
+  name: adamw
+  # Learning rate
+  lr: 0.0002
+  # Weight decay
+  weight_decay: 0.01
+  # Beta parameters
+  betas: [0.9, 0.999]
+
+# Scheduler configuration
+scheduler:
+  name: linear
+  # Number of warmup steps
+  warmup_steps: 100
+  # Total training steps (auto = computed from data)
+  num_training_steps: auto
+
+# Loss configuration
+loss:
+  name: cross_entropy
+  # Label smoothing
+  label_smoothing: 0.0
+
+# Metrics configuration
+metrics:
+  # Primary metric for early stopping
+  primary: macro_f1
+  # Whether to compute AUROC (only for <=10 classes)
+  compute_auroc: true
+  # Whether to generate confusion matrix
+  confusion_matrix: true
+  # Whether to generate per-class report
+  per_class_report: true
+
+# Logging configuration
+logging:
+  # Log interval (steps)
+  log_interval: 10
+  # Whether to use Weights & Biases
+  use_wandb: false
+  # WandB project name
+  wandb_project: metagene-classification
+  # WandB entity
+  wandb_entity: null

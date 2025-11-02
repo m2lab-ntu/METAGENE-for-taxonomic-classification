@@ -1,0 +1,103 @@
+# METAGENE Classification - RTX 4090 Optimized Config
+# Aggressive memory optimization for 24GB GPU
+
+seed: 42
+device: cuda
+
+# Tokenizer - Using HuggingFace official
+tokenizer:
+  name_or_path: metagene-ai/METAGENE-1
+  use_hf_tokenizer: true
+  max_length: 128  # Reduced from 512 to save ~60% memory
+  pack_short_reads: false
+  padding: max_length
+  truncation: true
+
+# Model configuration
+model:
+  encoder_path: metagene-ai/METAGENE-1
+  pooling: mean
+  num_classes: auto
+  dropout: 0.1
+  # Aggressive LoRA settings
+  lora:
+    enabled: true
+    r: 4  # Reduced from 8 to save memory
+    alpha: 8  # Proportional to r
+    dropout: 0.05  # Reduced dropout
+    target_modules: [q_proj, v_proj]  # Only Q and V, not K and O
+    bias: none
+    task_type: SEQ_CLS
+  # Enable gradient checkpointing (critical for memory)
+  gradient_checkpointing: true
+
+# Dataset configuration
+dataset:
+  train_fasta: null
+  val_fasta: null
+  test_fasta: null
+  mapping_tsv: null
+  header_regex: "^lbl\\|(?P<class_id>\\d+)\\|(?P<tax_id>\\d+)?\\|(?P<readlen>\\d+)?\\|(?P<name>[^/\\s]+)(?:/(?P<mate>\\d+))?$"
+  file_format: auto
+  gzip: auto
+  strict_classes: true
+  label_column: label_name
+  class_column: class_id
+  tax_column: tax_id
+
+# Training configuration - Aggressive memory saving
+training:
+  output_dir: outputs/exp1
+  batch_size: 1  # Minimum batch size
+  grad_accum_steps: 8  # Effective batch size = 1 * 8 = 8
+  max_epochs: 10
+  precision: bf16-mixed  # Keep mixed precision for speed
+  early_stopping:
+    patience: 3
+    metric: macro_f1
+    mode: max
+  checkpoint:
+    save_best: true
+    save_last: true
+  torch_compile: false  # Disable to save memory
+
+# Optimizer - Reduce memory footprint
+optimizer:
+  name: adamw
+  lr: 0.0002
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  # Use 8-bit optimizer if available
+  use_8bit: false  # Can enable if bitsandbytes is installed
+
+# Scheduler
+scheduler:
+  name: linear
+  warmup_steps: 50  # Reduced warmup
+  num_training_steps: auto
+
+# Loss
+loss:
+  name: cross_entropy
+  label_smoothing: 0.0
+
+# Metrics
+metrics:
+  primary: macro_f1
+  compute_auroc: true
+  confusion_matrix: true
+  per_class_report: true
+
+# Logging
+logging:
+  log_interval: 5  # More frequent logging with small batches
+  use_wandb: false
+  wandb_project: metagene-classification
+  wandb_entity: null
+
+# Memory optimization flags
+memory_optimization:
+  gradient_checkpointing: true
+  empty_cache_steps: 10  # Clear cache every N steps
+  max_split_size_mb: 128  # Fragment memory allocation
+
