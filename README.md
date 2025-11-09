@@ -539,6 +539,13 @@ If you don't have local GPU:
 - **[HUGGINGFACE_TOKENIZER_GUIDE.md](HUGGINGFACE_TOKENIZER_GUIDE.md)** - HuggingFace tokenizer integration
 - **[TESTING_SUMMARY_AND_RECOMMENDATIONS.md](TESTING_SUMMARY_AND_RECOMMENDATIONS.md)** - Complete testing report
 
+### Output Files Documentation
+
+- **[FILES_QUICK_REFERENCE.md](FILES_QUICK_REFERENCE.md)** - 📄 One-page quick reference for all output files
+- **[OUTPUT_FILES_GUIDE.md](OUTPUT_FILES_GUIDE.md)** - 📚 Comprehensive guide to training & testing outputs
+- **[WORKFLOW_AND_FILES.md](WORKFLOW_AND_FILES.md)** - 🔄 Complete workflow with file relationships
+- **[OUTPUT_STRUCTURE_SUMMARY.txt](OUTPUT_STRUCTURE_SUMMARY.txt)** - 🎯 Visual structure overview
+
 ### Scripts
 
 - **`setup_env.sh`** - Quick environment setup

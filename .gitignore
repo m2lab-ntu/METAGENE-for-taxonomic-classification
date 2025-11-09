@@ -65,6 +65,9 @@ model.safetensors
 *.fasta.gz
 !examples/*.fa
 !examples/*.fq
+data_subset/
+*_subset.fa
+*_manageable.fa
 
 # Large files
 *.tar
@@ -85,6 +88,8 @@ training.log
 *.log
 optimized_training.log
 download_log.txt
+*_wrapper.log
+subset_training_wrapper.log
 
 # Test outputs
 test_predictions.csv
