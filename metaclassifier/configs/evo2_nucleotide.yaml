@@ -1,0 +1,47 @@
+# Example configuration: Evo2 (Arc Institute) + Single-nucleotide tokenizer
+# Reference: https://github.com/ArcInstitute/evo2
+
+# Tokenizer configuration
+tokenizer:
+  type: evo2  # Single-nucleotide tokenization
+  max_length: 8192  # Evo2 supports up to 1M context
+
+# Encoder configuration
+encoder:
+  type: evo2
+  path: "evo2_7b"  # Options: evo2_7b, evo2_40b, evo2_1b_base, evo2_7b_262k
+  freeze: false
+  embedding_layer: "blocks.28.mlp.l3"  # Intermediate layer (recommended)
+  use_cached_embeddings: true
+
+# Model configuration
+model:
+  pooling: mean  # Options: mean, cls, max
+  classifier_type: linear  # Options: linear, transformer
+  classifier_config:
+    dropout: 0.1
+
+# Training configuration
+training:
+  batch_size: 4  # Evo2 models are large
+  grad_accum_steps: 8
+  max_epochs: 5
+  lr: 0.0001
+  weight_decay: 0.01
+  early_stopping:
+    patience: 2
+    metric: macro_f1
+
+# Prediction configuration
+prediction:
+  batch_size: 64
+  confidence_threshold: 0.0
+
+# Notes:
+# - Evo2 uses single-nucleotide resolution (A=4, C=5, G=6, T=7)
+# - 7B model has 4096 hidden size
+# - 40B model has 5120 hidden size (requires multiple GPUs)
+# - 1B model has 2048 hidden size (faster, less accurate)
+# - Supports up to 1M context length (use evo2_7b, evo2_40b)
+# - Base models have 8K context (evo2_7b_base, evo2_40b_base)
+

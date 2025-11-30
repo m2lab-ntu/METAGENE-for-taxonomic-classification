@@ -1,0 +1,80 @@
+# METAGENE-1 + K-mer Tokenizer Configuration
+# 用於性能比較實驗
+
+# Tokenizer configuration
+tokenizer:
+  type: kmer
+  k: 6                    # K-mer 大小
+  overlap: true           # 使用重疊 k-mers
+  max_length: 512         # K-mer 序列較長
+  use_hf: false
+
+# Encoder configuration
+encoder:
+  type: metagene
+  path: "metagene-ai/METAGENE-1"
+  freeze: false
+  gradient_checkpointing: true
+  lora:
+    enabled: true
+    r: 4
+    alpha: 8
+    dropout: 0.05
+    target_modules: [q_proj, v_proj]
+    bias: none
+
+# Model configuration
+model:
+  pooling: mean
+  classifier_type: linear
+  classifier_config:
+    dropout: 0.1
+
+# Training configuration
+training:
+  batch_size: 1
+  grad_accum_steps: 8
+  max_epochs: 5
+  lr: 0.0002
+  weight_decay: 0.01
+  precision: bf16-mixed
+  early_stopping:
+    patience: 2
+    metric: macro_f1
+    mode: max
+  checkpoint:
+    save_best: true
+    save_last: true
+
+# Dataset configuration (will be overridden by command line)
+dataset:
+  train_fasta: null
+  val_fasta: null
+  mapping_tsv: null
+  header_regex: "^lbl\\|(?P<class_id>\\d+)\\|(?P<tax_id>\\d+)?\\|(?P<readlen>\\d+)?\\|(?P<name>[^/\\s]+)(?:/(?P<mate>\\d+))?$"
+  class_column: class_id
+  label_column: label_name
+  tax_column: tax_id
+
+# Optimizer
+optimizer:
+  name: adamw
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+
+# Scheduler
+scheduler:
+  name: linear
+  warmup_steps: 50
+
+# Loss
+loss:
+  name: cross_entropy
+  label_smoothing: 0.0
+
+# Metrics
+metrics:
+  primary: macro_f1
+  compute_auroc: false
+  confusion_matrix: false
+

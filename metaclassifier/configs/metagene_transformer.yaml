@@ -1,0 +1,47 @@
+# Configuration: METAGENE-1 + BPE tokenizer + Transformer classifier
+
+# Tokenizer configuration
+tokenizer:
+  type: bpe
+  path: "metagene-ai/METAGENE-1"
+  max_length: 192
+  use_hf: true
+
+# Encoder configuration
+encoder:
+  type: metagene
+  path: "metagene-ai/METAGENE-1"
+  freeze: false
+  lora:
+    enabled: true
+    r: 8
+    alpha: 16
+    dropout: 0.05
+    target_modules: [q_proj, v_proj]
+    bias: none
+
+# Model configuration
+model:
+  pooling: mean
+  classifier_type: transformer
+  classifier_config:
+    num_layers: 2
+    num_heads: 8
+    dropout: 0.1
+
+# Training configuration
+training:
+  batch_size: 1
+  grad_accum_steps: 256
+  num_workers: 8
+  max_epochs: 1
+  lr: 0.0001
+  weight_decay: 0.01
+  early_stopping:
+    patience: 3
+    metric: macro_f1
+
+# Prediction configuration
+prediction:
+  batch_size: 1
+  confidence_threshold: 0.0

@@ -1,0 +1,40 @@
+# Example configuration: DNABERT + K-mer tokenizer + Transformer classifier
+
+# Tokenizer configuration
+tokenizer:
+  type: kmer
+  k: 6  # 6-mer tokenization
+  max_length: 512
+  overlap: true  # Overlapping k-mers
+  stride: 1
+
+# Encoder configuration
+encoder:
+  type: dnabert
+  path: "zhihan1996/DNABERT-2-117M"
+  freeze: false
+
+# Model configuration
+model:
+  pooling: mean
+  classifier_type: transformer  # Use transformer head
+  classifier_config:
+    num_layers: 2
+    num_heads: 8
+    dropout: 0.1
+    feedforward_dim: null  # Will default to 4 * hidden_size
+
+# Training configuration
+training:
+  batch_size: 8
+  grad_accum_steps: 4
+  num_workers: 8
+  max_epochs: 10
+  lr: 0.0001
+  weight_decay: 0.01
+
+# Prediction configuration
+prediction:
+  batch_size: 128
+  confidence_threshold: 0.5
+

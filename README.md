@@ -2,6 +2,23 @@
 
 Production-ready pipeline for DNA/RNA sequence classification using METAGENE-1 encoder with mean-pooled embeddings, linear classifier, and LoRA fine-tuning.
 
+## 🆕 **NEW: MetaClassifier - Modular Pipeline**
+
+**A new modular, extensible architecture is now available!**
+
+👉 **See [`metaclassifier/`](metaclassifier/)** for:
+- **Pluggable tokenizers**: BPE, K-mer, single-nucleotide
+- **Multiple encoders**: METAGENE-1, **Evo2**, DNABERT
+- **Flexible classifiers**: Linear, Transformer heads
+- **Sample aggregation**: Per-read → abundance estimation
+
+📚 **Documentation**:
+- [MetaClassifier README](metaclassifier/README.md)
+- [Using Evo2](metaclassifier/USING_EVO2.md)
+- [Migration Guide](metaclassifier/MIGRATION_GUIDE.md)
+
+---
+
 ## ✅ **VERIFIED: Works on RTX 4090 (24GB)!**
 
 **🎉 Successfully trained METAGENE-1 (7B) on single RTX 4090 with 13GB peak memory usage.**
@@ -9,6 +26,10 @@ Production-ready pipeline for DNA/RNA sequence classification using METAGENE-1 e
 ## Overview
 
 This pipeline provides end-to-end training, evaluation, and inference for per-read DNA/RNA sequence classification with optional per-sample aggregation.
+
+**Choose Your Pipeline:**
+- **Original Pipeline** (below): Battle-tested, production-ready METAGENE-1 classifier
+- **[MetaClassifier](metaclassifier/)**: Modular, supports multiple models (METAGENE-1, Evo2, DNABERT)
 
 **Key Features:**
 - ✅ **RTX 4090 optimized** - Successfully trains 7B model on 24GB GPU
@@ -532,25 +553,23 @@ If you don't have local GPU:
 
   ## 📚 Documentation
 
+### Main Guides
+
+- **[USER_GUIDE.md](USER_GUIDE.md)** - 📖 **Complete User Guide** (Quick Start + Training Your Dataset + Output Files)
+- **[DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)** - 🔧 **Developer Guide** (Hyperparameters + Optimizations + Advanced Topics)
+
 ### Quick References
 
-- **[QUICK_START_RTX4090.md](QUICK_START_RTX4090.md)** - 🚀 Start here for RTX 4090!
-- **[SUCCESS_RTX4090_TRAINING.md](SUCCESS_RTX4090_TRAINING.md)** - Detailed success report & optimizations
-- **[HUGGINGFACE_TOKENIZER_GUIDE.md](HUGGINGFACE_TOKENIZER_GUIDE.md)** - HuggingFace tokenizer integration
-- **[TESTING_SUMMARY_AND_RECOMMENDATIONS.md](TESTING_SUMMARY_AND_RECOMMENDATIONS.md)** - Complete testing report
+- **[HYPERPARAMETERS_QUICK_REF.txt](HYPERPARAMETERS_QUICK_REF.txt)** - ⚡ One-page hyperparameter reference
+- **[OUTPUT_STRUCTURE_SUMMARY.txt](OUTPUT_STRUCTURE_SUMMARY.txt)** - 🎯 Visual output structure overview
 
-### Output Files Documentation
-
-- **[FILES_QUICK_REFERENCE.md](FILES_QUICK_REFERENCE.md)** - 📄 One-page quick reference for all output files
-- **[OUTPUT_FILES_GUIDE.md](OUTPUT_FILES_GUIDE.md)** - 📚 Comprehensive guide to training & testing outputs
-- **[WORKFLOW_AND_FILES.md](WORKFLOW_AND_FILES.md)** - 🔄 Complete workflow with file relationships
-- **[OUTPUT_STRUCTURE_SUMMARY.txt](OUTPUT_STRUCTURE_SUMMARY.txt)** - 🎯 Visual structure overview
-
-### Scripts
+### Utility Scripts
 
 - **`setup_env.sh`** - Quick environment setup
 - **`test_optimized_training.sh`** - Test optimized training
 - **`test_dataloader_only.py`** - Test data loading without GPU
+- **`monitor_training.sh`** - Monitor training progress
+- **`pre_training_checklist.sh`** - Pre-training validation
 
 ### Configuration Files
 

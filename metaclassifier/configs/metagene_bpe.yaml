@@ -1,0 +1,46 @@
+# Example configuration: METAGENE-1 + BPE tokenizer + Linear classifier
+
+# Tokenizer configuration
+tokenizer:
+  type: bpe  # Options: bpe, kmer, evo2
+  path: "metagene-ai/METAGENE-1"
+  max_length: 192
+  use_hf: true
+
+# Encoder configuration
+encoder:
+  type: metagene  # Options: metagene, evo2, dnabert
+  path: "metagene-ai/METAGENE-1"
+  freeze: false
+  lora:
+    enabled: true
+    r: 4
+    alpha: 8
+    dropout: 0.05
+    target_modules: [q_proj, v_proj]
+    bias: none
+
+# Model configuration
+model:
+  pooling: mean  # Options: mean, cls, max
+  classifier_type: linear  # Options: linear, transformer
+  classifier_config:
+    dropout: 0.1
+
+# Training configuration
+training:
+  batch_size: 8
+  grad_accum_steps: 32
+  num_workers: 8
+  max_epochs: 5
+  lr: 0.0002
+  weight_decay: 0.01
+  early_stopping:
+    patience: 2
+    metric: macro_f1
+
+# Prediction configuration
+prediction:
+  batch_size: 256
+  confidence_threshold: 0.0
+
