@@ -1,0 +1,8 @@
+organism: Staphylococcus aureus strain 
+contigs: 3
+bases: 2729384
+CDS: 2473
+gene: 2553
+rRNA: 19
+tRNA: 60
+tmRNA: 1

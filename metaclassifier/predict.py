@@ -98,7 +98,11 @@ def load_model_from_checkpoint(
     checkpoint_path = Path(checkpoint_path)
     
     # Load checkpoint
-    checkpoint = torch.load(checkpoint_path, map_location=device)
+    # checkpoint = torch.load(checkpoint_path, map_location=device)
+    # Load checkpoint
+    # ✅ 修正：強制載入到 CPU RAM (你的電腦應該有 64GB+ RAM，這沒問題)
+    print(f"Loading checkpoint to CPU memory first to save VRAM...")
+    checkpoint = torch.load(checkpoint_path, map_location='cpu')
     
     # Load label mappings
     label_dir = checkpoint_path.parent

@@ -1,0 +1,8 @@
+organism: Bacillus subtilis strain 
+contigs: 2
+bases: 4222511
+CDS: 4129
+gene: 4237
+rRNA: 30
+tRNA: 77
+tmRNA: 1

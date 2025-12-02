@@ -1,0 +1,102 @@
+# METAGENE Classification - Fast Training Config
+# Optimized for speed while maintaining reasonable accuracy
+
+seed: 42
+device: cuda
+
+# Tokenizer - Optimized for 150bp sequences
+tokenizer:
+  name_or_path: metagene-ai/METAGENE-1
+  use_hf_tokenizer: true
+  max_length: 128  # ⚡ Optimized for 150bp reads (slight truncation, good speed)
+  # Alternative: 192 for full sequence retention with better speed than 256
+  pack_short_reads: false
+  padding: max_length
+  truncation: true
+
+# Model configuration
+model:
+  encoder_path: metagene-ai/METAGENE-1
+  pooling: mean
+  num_classes: auto
+  dropout: 0.1
+  # Minimal LoRA for speed
+  lora:
+    enabled: true
+    r: 4
+    alpha: 8
+    dropout: 0.05
+    target_modules: [q_proj, v_proj]
+    bias: none
+    task_type: SEQ_CLS
+  gradient_checkpointing: true
+
+# Dataset configuration
+dataset:
+  train_fasta: null
+  val_fasta: null
+  test_fasta: null
+  mapping_tsv: null
+  header_regex: "^lbl\\|(?P<class_id>\\d+)\\|(?P<tax_id>\\d+)?\\|(?P<readlen>\\d+)?\\|(?P<name>[^/\\s]+)(?:/(?P<mate>\\d+))?$"
+  file_format: auto
+  gzip: auto
+  strict_classes: true
+  label_column: label_name
+  class_column: class_id
+  tax_column: tax_id
+
+# Training configuration - Speed optimized
+training:
+  output_dir: outputs/exp1
+  batch_size: 1
+  grad_accum_steps: 4  # ⚡ Reduced from 8 (fewer steps per update)
+  max_epochs: 3  # ⚡ Reduced from 10 (70% time saving)
+  precision: bf16-mixed
+  early_stopping:
+    patience: 2  # ⚡ Reduced from 3 (stop earlier if no improvement)
+    metric: macro_f1
+    mode: max
+  checkpoint:
+    save_best: true
+    save_last: true
+  torch_compile: false
+
+# Optimizer
+optimizer:
+  name: adamw
+  lr: 0.0002
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  use_8bit: false
+
+# Scheduler
+scheduler:
+  name: linear
+  warmup_steps: 30  # ⚡ Reduced from 50
+  num_training_steps: auto
+
+# Loss
+loss:
+  name: cross_entropy
+  label_smoothing: 0.0
+
+# Metrics - Minimal for speed
+metrics:
+  primary: macro_f1
+  compute_auroc: false  # ⚡ Disabled to save time
+  confusion_matrix: false  # ⚡ Disabled to save time
+  per_class_report: false  # ⚡ Disabled to save time
+
+# Logging
+logging:
+  log_interval: 10  # ⚡ Less frequent logging
+  use_wandb: false
+  wandb_project: metagene-classification
+  wandb_entity: null
+
+# Memory optimization
+memory_optimization:
+  gradient_checkpointing: true
+  empty_cache_steps: 20  # ⚡ Less frequent cache clearing
+  max_split_size_mb: 128
+

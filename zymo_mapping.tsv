@@ -1,0 +1,23 @@
+class_id	label_name	tax_id
+0	Saccharomyces cerevisiae complete genome	1000
+1	Lactobacillus fermentum complete genome	1001
+2	Listeria monocytogenes complete genome	1002
+3	Enterococcus faecalis complete genome	1003
+4	Pseudomonas aeruginosa complete genome	1004
+5	Staphylococcus aureus complete genome	1005
+6	Cryptococcus neoformans complete genome	1006
+7	Escherichia coli complete genome	1007
+8	Bacillus subtilis complete genome	1008
+9	Salmonella enterica complete genome	1009
+10	Bacillus subtilis 16S 170923	1010
+11	Staphylococcus aureus 16S 170923	1011
+12	Lactobacillus fermentum 16S 230307	1012
+13	Salmonella enterica 16S 170923	1013
+14	Saccharomyces cerevisiae mitochondria ssrRNA	1014
+15	Listeria monocytogenes 16S 170923	1015
+16	Cryptococcus neoformans 18S 170924	1016
+17	Escherichia coli 16S 170923	1017
+18	Cryptococcus neoformans Mitochondria ssrRNA	1018
+19	Enterococcus faecalis 16S 170923	1019
+20	Saccharomyces cerevisiae 18S 170924	1020
+21	Pseudomonas aeruginosa 16S 170923	1021

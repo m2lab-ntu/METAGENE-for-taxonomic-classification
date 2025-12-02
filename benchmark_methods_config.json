@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Fast_Training_20251110",
+    "checkpoint": "outputs/fast_training_20251110_200726/checkpoints/best.pt",
+    "config": "configs/fast_training.yaml",
+    "description": "Fast training configuration with optimized settings"
+  },
+  {
+    "name": "Optimized_Test",
+    "checkpoint": "outputs/optimized_test/checkpoints/best.pt",
+    "config": "configs/optimal_150bp.yaml",
+    "description": "Optimized configuration for 150bp reads"
+  },
+  {
+    "name": "Subset_Training_20251107",
+    "checkpoint": "outputs/subset_training_20251107_122024/checkpoints/best.pt",
+    "config": null,
+    "description": "Training on data subset"
+  }
+]

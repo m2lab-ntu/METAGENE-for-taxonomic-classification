@@ -66,6 +66,7 @@ model.safetensors
 !examples/*.fa
 !examples/*.fq
 data_subset/
+data_diagnosis_50/
 *_subset.fa
 *_manageable.fa
 

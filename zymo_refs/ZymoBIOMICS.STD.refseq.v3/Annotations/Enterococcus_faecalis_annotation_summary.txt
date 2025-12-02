@@ -1,0 +1,9 @@
+organism: Enterococcus faecalis strain 
+contigs: 1
+bases: 2895646
+CDS: 2731
+gene: 2808
+rRNA: 12
+repeat_region: 2
+tRNA: 64
+tmRNA: 1

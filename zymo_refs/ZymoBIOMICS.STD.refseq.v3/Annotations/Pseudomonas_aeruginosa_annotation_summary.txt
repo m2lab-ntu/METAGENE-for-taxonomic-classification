@@ -1,0 +1,9 @@
+organism: Pseudomonas aeruginosa strain 
+contigs: 2
+bases: 6846579
+CDS: 6339
+gene: 6430
+rRNA: 12
+repeat_region: 4
+tRNA: 78
+tmRNA: 1

@@ -1,0 +1,100 @@
+# METAGENE Classification - Optimal for 150bp Reads
+# Balanced speed and accuracy for your specific data
+
+seed: 42
+device: cuda
+
+# Tokenizer - Perfect fit for 150bp sequences
+tokenizer:
+  name_or_path: metagene-ai/METAGENE-1
+  use_hf_tokenizer: true
+  max_length: 192  # ⭐ Optimal for 150bp: full sequence + tokenizer overhead
+  pack_short_reads: false
+  padding: max_length
+  truncation: true
+
+# Model configuration
+model:
+  encoder_path: metagene-ai/METAGENE-1
+  pooling: mean
+  num_classes: auto
+  dropout: 0.1
+  lora:
+    enabled: true
+    r: 4
+    alpha: 8
+    dropout: 0.05
+    target_modules: [q_proj, v_proj]
+    bias: none
+    task_type: SEQ_CLS
+  gradient_checkpointing: true
+
+# Dataset configuration
+dataset:
+  train_fasta: null
+  val_fasta: null
+  test_fasta: null
+  mapping_tsv: null
+  header_regex: "^lbl\\|(?P<class_id>\\d+)\\|(?P<tax_id>\\d+)?\\|(?P<readlen>\\d+)?\\|(?P<name>[^/\\s]+)(?:/(?P<mate>\\d+))?$"
+  file_format: auto
+  gzip: auto
+  strict_classes: true
+  label_column: label_name
+  class_column: class_id
+  tax_column: tax_id
+
+# Training configuration - Balanced
+training:
+  output_dir: outputs/exp1
+  batch_size: 1
+  grad_accum_steps: 6  # Effective batch = 6
+  max_epochs: 5  # Reduced from 10 for faster training
+  precision: bf16-mixed
+  early_stopping:
+    patience: 2
+    metric: macro_f1
+    mode: max
+  checkpoint:
+    save_best: true
+    save_last: true
+  torch_compile: false
+
+# Optimizer
+optimizer:
+  name: adamw
+  lr: 0.0002
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  use_8bit: false
+
+# Scheduler
+scheduler:
+  name: linear
+  warmup_steps: 40
+  num_training_steps: auto
+
+# Loss
+loss:
+  name: cross_entropy
+  label_smoothing: 0.0
+
+# Metrics
+metrics:
+  primary: macro_f1
+  compute_auroc: true
+  confusion_matrix: true
+  per_class_report: true
+
+# Logging
+logging:
+  log_interval: 10
+  use_wandb: false
+  wandb_project: metagene-classification
+  wandb_entity: null
+
+# Memory optimization
+memory_optimization:
+  gradient_checkpointing: true
+  empty_cache_steps: 15
+  max_split_size_mb: 128
+

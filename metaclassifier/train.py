@@ -26,8 +26,8 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
 # Import modular components
-from metaclassifier.tokenization import BPETokenizer, KmerTokenizer, Evo2Tokenizer
-from metaclassifier.embedding import MetageneEncoder, Evo2Encoder, DNABERTEncoder
+from metaclassifier.tokenization import BPETokenizer, KmerTokenizer, Evo2Tokenizer, GENERannoTokenizer
+from metaclassifier.embedding import MetageneEncoder, Evo2Encoder, DNABERTEncoder, GENERannoEncoder
 from metaclassifier.model import TaxonomicClassifier
 from metaclassifier.dataset_optimized import IndexedFastaDataset, InMemoryDataset
 
@@ -110,6 +110,11 @@ def create_tokenizer(tokenizer_config: Dict):
         return Evo2Tokenizer(
             max_length=tokenizer_config['max_length']
         )
+    elif tokenizer_type == 'generanno':
+        return GENERannoTokenizer(
+            tokenizer_path=tokenizer_config['path'],
+            max_length=tokenizer_config['max_length']
+        )
     else:
         raise ValueError(f"Unknown tokenizer type: {tokenizer_type}")
 
@@ -135,6 +140,13 @@ def create_encoder(encoder_config: Dict):
         return DNABERTEncoder(
             model_name_or_path=encoder_config['path'],
             freeze=encoder_config.get('freeze', False)
+        )
+    elif encoder_type == 'generanno':
+        return GENERannoEncoder(
+            model_name_or_path=encoder_config['path'],
+            freeze=encoder_config.get('freeze', False),
+            lora_config=encoder_config.get('lora', None),
+            gradient_checkpointing=encoder_config.get('gradient_checkpointing', False)
         )
     else:
         raise ValueError(f"Unknown encoder type: {encoder_type}")

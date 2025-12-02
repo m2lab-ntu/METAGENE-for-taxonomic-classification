@@ -1,0 +1,9 @@
+organism: Lactobacillus fermentum strain 
+contigs: 20
+bases: 2227379
+CDS: 2253
+gene: 2328
+rRNA: 15
+repeat_region: 1
+tRNA: 59
+tmRNA: 1

@@ -1,0 +1,9 @@
+organism: Listeria monocytogenes strain 
+contigs: 1
+bases: 3032011
+CDS: 2965
+gene: 3051
+rRNA: 18
+repeat_region: 1
+tRNA: 67
+tmRNA: 1
