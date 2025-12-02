@@ -32,8 +32,8 @@ model:
 
 # Training configuration
 training:
-  batch_size: 1
-  grad_accum_steps: 256
+  batch_size: 8
+  grad_accum_steps: 32
   num_workers: 8
   max_epochs: 10
   lr: 0.0001
