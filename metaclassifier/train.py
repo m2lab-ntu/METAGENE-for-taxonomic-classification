@@ -167,8 +167,8 @@ def train_epoch(model, dataloader, optimizer, scaler, device, grad_accum_steps=1
         attention_mask = batch['attention_mask'].to(device)
         labels = batch['labels'].to(device)
         
-        # Forward pass with mixed precision
-        with autocast(dtype=torch.bfloat16):
+        # Forward pass        # Mixed precision context
+        with torch.amp.autocast('cuda', dtype=torch.bfloat16):
             outputs = model(input_ids, attention_mask, labels)
             loss = outputs['loss'] / grad_accum_steps
         
@@ -326,8 +326,11 @@ def main():
         weight_decay=config['training'].get('weight_decay', 0.01)
     )
     
-    # Create scaler for mixed precision
-    scaler = GradScaler()
+    # Initialize GradScaler for mixed precision training
+    scaler = torch.amp.GradScaler('cuda')
+    
+    # Initialize history list
+    history = []
     
     # Training loop
     best_val_acc = 0
@@ -346,6 +349,18 @@ def main():
         
         print(f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}")
         print(f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
+        
+        # Log history
+        history.append({
+            'epoch': epoch + 1,
+            'train_loss': train_loss,
+            'train_acc': train_acc,
+            'val_loss': val_loss,
+            'val_acc': val_acc
+        })
+        
+        # Save history to CSV immediately
+        pd.DataFrame(history).to_csv(output_dir / "log_history.csv", index=False)
         
         # Save best model
         if val_acc > best_val_acc:

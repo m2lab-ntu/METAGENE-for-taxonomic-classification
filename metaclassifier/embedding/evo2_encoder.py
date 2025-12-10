@@ -35,7 +35,7 @@ class Evo2Encoder(BaseEncoder):
         freeze: bool = False,
         lora_config: Optional[Dict] = None,
         embedding_layer: str = "blocks.28.mlp.l3",
-        use_cached_embeddings: bool = True
+        use_cached_embeddings: bool = False
     ):
         """
         Initialize Evo2 encoder.
@@ -70,17 +70,23 @@ class Evo2Encoder(BaseEncoder):
         self.evo2_model = Evo2(model_name_or_path)
         
         # Detect hidden size from model config
-        # Evo2 7B has hidden_size = 4096, 40B has 5120, 1B has 2048
-        if '40b' in model_name_or_path.lower():
+        hidden_size = 4096 # Default
+        
+        # Try to get from config first
+        if hasattr(self.evo2_model, 'model') and hasattr(self.evo2_model.model, 'config'):
+            if hasattr(self.evo2_model.model.config, 'hidden_size'):
+                hidden_size = self.evo2_model.model.config.hidden_size
+                print(f"Detected hidden_size from config: {hidden_size}")
+        
+        # Fallback to name-based detection if config check failed (or for other versions)
+        elif '40b' in model_name_or_path.lower():
             hidden_size = 5120
         elif '7b' in model_name_or_path.lower():
             hidden_size = 4096
         elif '1b' in model_name_or_path.lower():
-            hidden_size = 2048
-        else:
-            # Default fallback
-            hidden_size = 4096
-            print(f"Warning: Unknown model size, assuming hidden_size={hidden_size}")
+            hidden_size = 2048 # This was wrong for 1b_base (is 1920), but keeping as fallback
+            
+        print(f"Using hidden_size={hidden_size}")
         
         # Initialize base class
         super().__init__(
@@ -97,7 +103,13 @@ class Evo2Encoder(BaseEncoder):
         
         # Freeze if requested
         if freeze:
-            self.freeze_encoder()
+            # Evo2 wrapper stores the actual model in .model
+            if hasattr(self.encoder, 'model'):
+                for param in self.encoder.model.parameters():
+                    param.requires_grad = False
+                self.encoder.model.eval()
+            else:
+                self.freeze_encoder()
         
         # LoRA not yet supported for Evo2
         if lora_config is not None:
@@ -134,18 +146,32 @@ class Evo2Encoder(BaseEncoder):
                 return self._embedding_cache[cache_key]
         
         # Evo2 expects input on the correct device
-        device = next(self.encoder.parameters()).device
+        if hasattr(self.encoder, 'model'):
+            device = next(self.encoder.model.parameters()).device
+        else:
+            device = next(self.encoder.parameters()).device
         input_ids = input_ids.to(device)
         
-        # Get embeddings from specified layer
-        _, embeddings = self.encoder(
-            input_ids,
-            return_embeddings=True,
-            layer_names=[self.embedding_layer]
-        )
+        # Force eval mode if frozen (because model.train() in train.py overrides it)
+        if self.freeze:
+            if hasattr(self.encoder, 'model'):
+                self.encoder.model.eval()
+            else:
+                self.encoder.eval()
         
-        # Extract embeddings for the specified layer
-        hidden_states = embeddings[self.embedding_layer]
+        # Context manager for no_grad if frozen
+        context = torch.no_grad() if self.freeze else torch.enable_grad()
+        
+        with context:
+            # Get embeddings from specified layer
+            _, embeddings = self.encoder(
+                input_ids,
+                return_embeddings=True,
+                layer_names=[self.embedding_layer]
+            )
+            
+            # Extract embeddings for the specified layer
+            hidden_states = embeddings[self.embedding_layer]
         
         # Cache if enabled
         if self.use_cached_embeddings and cache_key is not None:
@@ -209,7 +235,14 @@ class Evo2Encoder(BaseEncoder):
         input_ids = torch.tensor(
             self.evo2_model.tokenizer.tokenize(sequence),
             dtype=torch.int
-        ).unsqueeze(0).to(next(self.encoder.parameters()).device)
+        ).unsqueeze(0)
+        
+        if hasattr(self.encoder, 'model'):
+            device = next(self.encoder.model.parameters()).device
+        else:
+            device = next(self.encoder.parameters()).device
+            
+        input_ids = input_ids.to(device)
         
         # Forward pass
         outputs, _ = self.evo2_model(input_ids)

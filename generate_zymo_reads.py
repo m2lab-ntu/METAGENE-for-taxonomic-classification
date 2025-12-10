@@ -24,6 +24,9 @@ def generate_reads(
             if file.endswith(('.fasta', '.fa', '.fna')) and 'MACOSX' not in root:
                 genome_files.append(os.path.join(root, file))
     
+    # Sort for deterministic order
+    genome_files.sort()
+    
     print(f"Found {len(genome_files)} genomes")
     
     # Create mapping
@@ -80,9 +83,20 @@ def generate_reads(
     print(f"Saved reads to {output_fasta}")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Generate synthetic Zymo reads")
+    parser.add_argument("--input_dir", default="zymo_refs", help="Input directory containing reference genomes")
+    parser.add_argument("--output_fasta", required=True, help="Output FASTA file")
+    parser.add_argument("--mapping_output", required=True, help="Output mapping TSV file")
+    parser.add_argument("--num_reads", type=int, default=200, help="Number of reads per species")
+    parser.add_argument("--read_length", type=int, default=150, help="Read length")
+    
+    args = parser.parse_args()
+    
     generate_reads(
-        input_dir="zymo_refs",
-        output_fasta="zymo_test_reads.fa",
-        mapping_output="zymo_mapping.tsv",
-        num_reads_per_species=200  # 200 reads per species * ~10 species = 2000 reads
+        input_dir=args.input_dir,
+        output_fasta=args.output_fasta,
+        mapping_output=args.mapping_output,
+        num_reads_per_species=args.num_reads,
+        read_length=args.read_length
     )

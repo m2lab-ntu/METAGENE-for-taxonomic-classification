@@ -1,0 +1,39 @@
+# Configuration: Evo2 + Transformer classifier
+
+# Tokenizer configuration
+tokenizer:
+  type: evo2
+  max_length: 1024
+
+# Encoder configuration
+encoder:
+  type: evo2
+  path: "evo2_1b_base" # Using 1B base model for reasonable speed/memory
+  freeze: true # Freeze encoder as Evo2 is very large
+  embedding_layer: "blocks.24.mlp.l3"
+
+# Model configuration
+model:
+  pooling: mean
+  classifier_type: transformer
+  classifier_config:
+    num_layers: 2
+    num_heads: 8
+    dropout: 0.1
+
+# Training configuration
+training:
+  batch_size: 1
+  grad_accum_steps: 256
+  num_workers: 4
+  max_epochs: 10
+  lr: 0.0001
+  weight_decay: 0.01
+  early_stopping:
+    patience: 3
+    metric: accuracy
+
+# Prediction configuration
+prediction:
+  batch_size: 1
+  confidence_threshold: 0.0

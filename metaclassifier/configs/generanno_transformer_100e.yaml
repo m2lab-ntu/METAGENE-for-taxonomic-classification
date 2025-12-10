@@ -1,0 +1,48 @@
+# Configuration: GENERanno + Transformer classifier (100 Epochs)
+
+# Tokenizer configuration
+tokenizer:
+  type: generanno
+  path: "GenerTeam/GENERanno-prokaryote-0.5b-base"
+  max_length: 1024
+  use_hf: true
+
+# Encoder configuration
+encoder:
+  type: generanno
+  path: "GenerTeam/GENERanno-prokaryote-0.5b-base"
+  freeze: false
+  lora:
+    enabled: true
+    r: 8
+    alpha: 16
+    dropout: 0.05
+    target_modules: [q_proj, v_proj]
+    bias: none
+  gradient_checkpointing: true
+
+# Model configuration
+model:
+  pooling: mean
+  classifier_type: transformer
+  classifier_config:
+    num_layers: 2
+    num_heads: 8
+    dropout: 0.1
+
+# Training configuration
+training:
+  batch_size: 8
+  grad_accum_steps: 32
+  num_workers: 8
+  max_epochs: 100
+  lr: 0.0001
+  weight_decay: 0.01
+  early_stopping:
+    patience: 15
+    metric: accuracy  # Changed to accuracy as that's what we track in the report usually
+
+# Prediction configuration
+prediction:
+  batch_size: 1
+  confidence_threshold: 0.0
