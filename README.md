@@ -19,6 +19,35 @@ Production-ready pipeline for DNA/RNA sequence classification using METAGENE-1 e
 
 ---
 
+## 📊 **Benchmarks (Zymo Mock Community)**
+
+We extensively benchmarked foundation models on the standard Zymo dataset to evaluate classification accuracy:
+
+| Model | Parameters | Training | Accuracy | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **METAGENE-1** | 6.8B | 10 Epochs | **86.50%** | ✅ Baseline (Best) |
+| **METAGENE-1** | 6.8B | 100 Epochs | *Run in progress* | 🔄 Training (Current: ~81%) |
+| **GENERanno** | 0.5B | 100 Epochs | **77.00%** | ✅ Efficient Alternative |
+| **Evo2** | 1B | 10 Epochs | 4.55% | ❌ Failed to converge |
+
+### Training Comparison
+![Model Comparison](outputs/model_comparison.png)
+*Figure: Training trajectories of METAGENE-1, GENERanno, and Evo2.*
+
+### How to Run Benchmarks
+```bash
+# Run GENERanno + Evo2 (Baseline)
+./run_zymo_benchmark.sh
+
+# Run GENERanno (100 Epochs)
+./run_zymo_generanno_100e.sh
+
+# Run METAGENE-1 (100 Epochs, RTX 4090 Optimized)
+./run_zymo_metagene1_100e.sh
+```
+
+---
+
 ## ✅ **VERIFIED: Works on RTX 4090 (24GB)!**
 
 **🎉 Successfully trained METAGENE-1 (7B) on single RTX 4090 with 13GB peak memory usage.**
