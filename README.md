@@ -46,6 +46,34 @@ We extensively benchmarked foundation models on the standard Zymo dataset to eva
 ./run_zymo_metagene1_100e.sh
 ```
 
+## 🚀 **Remote Deployment & Full Dataset Training**
+
+To train on the full **MetaTransformer_original_dataset (99GB)** using a high-performance GPU (A100/H100):
+
+### 1. Clone & Setup
+```bash
+git clone <YOUR_REPO_URL> METAGENE_Classification
+cd METAGENE_Classification
+source install.sh  # Sets up Conda env and dependencies
+```
+
+### 2. Run Training
+Use the dedicated remote script which is optimized for 80GB VRAM (Batch Size 32, Grad Accum 8):
+
+```bash
+# Basic usage (Assumes data at /data/MetaTransformer_original_dataset)
+./run_remote_full.sh
+
+# Specify custom dataset path
+./run_remote_full.sh /path/to/your/dataset
+```
+
+**Configuration**: `metaclassifier/configs/remote_a100_full.yaml`
+*   **Batch Size**: 32 (optimized for A100)
+*   **Initial LR**: 0.00002 (2e-5, verified stable)
+*   **Max Epochs**: 100
+
+
 ---
 
 ## ✅ **VERIFIED: Works on RTX 4090 (24GB)!**
