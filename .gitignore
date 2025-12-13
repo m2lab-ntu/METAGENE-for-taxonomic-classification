@@ -69,6 +69,7 @@ data_subset/
 data_diagnosis_50/
 *_subset.fa
 *_manageable.fa
+data_subset_100/
 
 # Large files
 *.tar

@@ -26,7 +26,7 @@ We extensively benchmarked foundation models on the standard Zymo dataset to eva
 | Model | Parameters | Training | Accuracy | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **METAGENE-1** | 6.8B | 10 Epochs | **86.50%** | ✅ Baseline (Best) |
-| **METAGENE-1** | 6.8B | 100 Epochs | *Run in progress* | 🔄 Training (Current: ~81%) |
+| **METAGENE-1** | 6.8B | 100 Epochs | *Run in progress* | 🔄 Epoch 53: **~81.4%** (Plateaued/Overfitting) |
 | **GENERanno** | 0.5B | 100 Epochs | **77.00%** | ✅ Efficient Alternative |
 | **Evo2** | 1B | 10 Epochs | 4.55% | ❌ Failed to converge |
 
