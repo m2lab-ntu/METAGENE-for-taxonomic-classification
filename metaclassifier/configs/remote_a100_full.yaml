@@ -1,0 +1,49 @@
+# Configuration: METAGENE-1 (Remote A100/H100 Optimized)
+# Target Hardware: 80GB VRAM (A100/H100)
+# Dataset: Full Original Dataset
+
+# Tokenizer configuration
+tokenizer:
+  type: bpe
+  path: "metagene-ai/METAGENE-1"
+  max_length: 192
+  use_hf: true
+
+# Encoder configuration
+encoder:
+  type: metagene
+  path: "metagene-ai/METAGENE-1"
+  freeze: false
+  lora:
+    enabled: true
+    r: 8
+    alpha: 16
+    dropout: 0.05
+    target_modules: [q_proj, v_proj]
+    bias: none
+
+# Model configuration
+model:
+  pooling: mean
+  classifier_type: transformer
+  classifier_config:
+    num_layers: 2
+    num_heads: 8
+    dropout: 0.1
+
+# Training configuration
+training:
+  batch_size: 32           # Optimized for 80GB VRAM
+  grad_accum_steps: 8      # Effective batch size = 32 * 8 = 256
+  num_workers: 16          # More CPU cores on server
+  max_epochs: 100
+  lr: 0.00002              # Stable learning rate verified on 100 species
+  weight_decay: 0.01
+  early_stopping:
+    patience: 15
+    metric: accuracy
+
+# Prediction configuration
+prediction:
+  batch_size: 64           # Fast inference
+  confidence_threshold: 0.0
